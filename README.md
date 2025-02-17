@@ -31,7 +31,7 @@ To get started with the Tic-Tac-Toe game, follow these steps:
 1. Clone the repository:
 
    ```bash/command prompt :
-   [git clone https://github.com/yourusername/tic-tac-toe.git](https://github.com/uttam-marakana/tic-tac-toe.git)
+   (https://github.com/uttam-marakana/tic-tac-toe.git)
 
 
 2. install npm/yarn :
