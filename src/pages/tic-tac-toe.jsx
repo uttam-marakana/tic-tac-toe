@@ -1,6 +1,4 @@
-import { useState } from 'react';
-import { FaRegCircle } from "react-icons/fa";
-import { IoCloseSharp } from "react-icons/io5";
+import { useState } from "react";
 
 function Square({ value, onSquareClick }) {
   return (
@@ -19,12 +17,14 @@ function Board({ xIsNext, squares, onPlay }) {
       return;
     }
     const nextSquares = squares.slice();
-    nextSquares[i] = xIsNext ? <IoCloseSharp /> : <FaRegCircle />;
+    nextSquares[i] = xIsNext ? "X" : "O";
     onPlay(nextSquares);
   }
 
   const winner = calculateWinner(squares);
-  const status = winner ? 'Winner: ' + winner : 'Next player: ' + (xIsNext ? '1' : '2');
+  const status = winner
+    ? "Winner: " + winner
+    : "Next player: " + (xIsNext ? "1" : "2");
 
   return (
     <div className="flex flex-col items-center">
@@ -48,7 +48,7 @@ function Board({ xIsNext, squares, onPlay }) {
   );
 }
 
-export default function TicTacToe() {
+export default function Game() {
   const [history, setHistory] = useState([Array(9).fill(null)]);
   const [currentMove, setCurrentMove] = useState(0);
   const xIsNext = currentMove % 2 === 0;
@@ -64,14 +64,25 @@ export default function TicTacToe() {
     setCurrentMove(nextMove);
   }
 
+  function restartGame() {
+    setHistory([Array(9).fill(null)]);
+    setCurrentMove(0);
+  }
+
+  const winner = calculateWinner(currentSquares);
   const moves = history.map((squares, move) => {
-    const description = move > 0 ? 'Go to move #' + move : 'Go to game start';
+    const description = move > 0 ? "Go to move #" + move : "Go to game start";
     return (
-      <li key={move}>
-        <button className="text-blue-500 hover:underline" onClick={() => jumpTo(move)}>
-          {description}
-        </button>
-      </li>
+      <tr key={move}>
+        <td className="border px-4 py-2">
+          <button
+            className="text-blue-500 hover:underline"
+            onClick={() => jumpTo(move)}
+          >
+            {description}
+          </button>
+        </td>
+      </tr>
     );
   });
 
@@ -80,8 +91,29 @@ export default function TicTacToe() {
       <div className="game-board mb-4">
         <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
       </div>
-      <div className="game-info">
-        <ol>{moves}</ol>
+      {winner && (
+        <div className="mb-4">
+          <h2 className="text-2xl font-bold">Winner is: {winner}</h2>
+        </div>
+      )}
+      <button
+        className="mt-4 px-4 py-2 bg-green-500 text-white rounded-lg shadow-lg transform transition-transform duration-300 hover:scale-105 hover:bg-green-600 hover:shadow-xl active:scale-95 cursor-pointer"
+        onClick={restartGame}
+      >
+        Start A New Game
+      </button>
+      <div className="mt-4 w-full max-w-md">
+        <h3 className="text-xl font-bold mb-2">Game History</h3>
+        <table className="min-w-full bg-white shadow-lg rounded-lg overflow-hidden">
+          <thead>
+            <tr className="bg-gray-200">
+              <th className="py-2 px-4 text-left">Moves</th>
+            </tr>
+          </thead>
+          <tbody>
+            {moves}
+          </tbody>
+        </table>
       </div>
     </div>
   );
