@@ -102,19 +102,6 @@ export default function Game() {
       >
         Start A New Game
       </button>
-      <div className="mt-4 w-full max-w-md">
-        <h3 className="text-xl font-bold mb-2">Game History</h3>
-        <table className="min-w-full bg-white shadow-lg rounded-lg overflow-hidden">
-          <thead>
-            <tr className="bg-gray-200">
-              <th className="py-2 px-4 text-left">Moves</th>
-            </tr>
-          </thead>
-          <tbody>
-            {moves}
-          </tbody>
-        </table>
-      </div>
     </div>
   );
 }
