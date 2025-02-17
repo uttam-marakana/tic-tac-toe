@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function Square({ value, onSquareClick }) {
   return (
@@ -17,7 +17,7 @@ function Board({ xIsNext, squares, onPlay }) {
       return;
     }
     const nextSquares = squares.slice();
-    nextSquares[i] = xIsNext ? "X" : "O";
+    nextSquares[i] = xIsNext ? "⨝" : "◎";
     onPlay(nextSquares);
   }
 
@@ -51,8 +51,21 @@ function Board({ xIsNext, squares, onPlay }) {
 export default function Game() {
   const [history, setHistory] = useState([Array(9).fill(null)]);
   const [currentMove, setCurrentMove] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(60); 
   const xIsNext = currentMove % 2 === 0;
   const currentSquares = history[currentMove];
+
+  useEffect(() => {
+    if (timeLeft > 0 && !calculateWinner(currentSquares)) {
+      const timerId = setInterval(() => {
+        setTimeLeft((prevTime) => prevTime - 1);
+      }, 1000);
+      return () => clearInterval(timerId);
+    } else if (timeLeft === 0) {
+      alert("Time's up! It's a draw.");
+      restartGame();
+    }
+  }, [timeLeft, currentSquares]);
 
   function handlePlay(nextSquares) {
     const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
@@ -67,9 +80,12 @@ export default function Game() {
   function restartGame() {
     setHistory([Array(9).fill(null)]);
     setCurrentMove(0);
+    setTimeLeft(60);
   }
 
   const winner = calculateWinner(currentSquares);
+  const isDraw = !winner && currentSquares.every(square => square !== null);
+
   const moves = history.map((squares, move) => {
     const description = move > 0 ? "Go to move #" + move : "Go to game start";
     return (
@@ -89,12 +105,25 @@ export default function Game() {
   return (
     <div className="game flex flex-col items-center p-4">
       <div className="game-board mb-4">
-        <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
+ <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
       </div>
-      {winner && (
+      <div className="timer mb-4 text-lg">
+        Time left: {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}
+      </div>
+      {winner ? (
         <div className="mb-4">
           <h2 className="text-2xl font-bold">Winner is: {winner}</h2>
         </div>
+      ) : isDraw ? (
+        <div className="mb-4">
+          <h2 className="text-2xl font-bold">It's a draw!</h2>
+        </div>
+      ) : (
+        timeLeft === 0 && (
+          <div className="mb-4">
+            <h2 className="text-2xl font-bold">Time's up! It's a draw.</h2>
+          </div>
+        )
       )}
       <button
         className="mt-4 px-4 py-2 bg-green-500 text-white rounded-lg shadow-lg transform transition-transform duration-300 hover:scale-105 hover:bg-green-600 hover:shadow-xl active:scale-95 cursor-pointer"
