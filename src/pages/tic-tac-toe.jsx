@@ -51,7 +51,7 @@ function Board({ xIsNext, squares, onPlay }) {
 export default function Game() {
   const [history, setHistory] = useState([Array(9).fill(null)]);
   const [currentMove, setCurrentMove] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(60); 
+  const [timeLeft, setTimeLeft] = useState(60);
   const xIsNext = currentMove % 2 === 0;
   const currentSquares = history[currentMove];
 
@@ -84,7 +84,7 @@ export default function Game() {
   }
 
   const winner = calculateWinner(currentSquares);
-  const isDraw = !winner && currentSquares.every(square => square !== null);
+  const isDraw = !winner && currentSquares.every((square) => square !== null);
 
   const moves = history.map((squares, move) => {
     const description = move > 0 ? "Go to move #" + move : "Go to game start";
@@ -105,10 +105,11 @@ export default function Game() {
   return (
     <div className="game flex flex-col items-center p-4">
       <div className="game-board mb-4">
- <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
+        <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
       </div>
       <div className="timer mb-4 text-lg">
-        Time left: {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}
+        Time left: {Math.floor(timeLeft / 60)}:
+        {(timeLeft % 60).toString().padStart(2, "0")}
       </div>
       {winner ? (
         <div className="mb-4">
